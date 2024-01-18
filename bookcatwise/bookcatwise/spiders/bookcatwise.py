@@ -23,5 +23,7 @@ class BookSpider(scrapy.Spider):
 
         print("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:",cats)
 
+        for 
+
 
         
