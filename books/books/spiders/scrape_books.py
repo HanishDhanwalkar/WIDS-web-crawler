@@ -30,9 +30,9 @@ class BookSpider(scrapy.Spider):
             books.to_csv('books.csv', index=False)
 
         next_page = response.css('li.next a::attr(href)').get()
-        print("Searching " + next_page)
 
         if next_page:
+            print("Searching " + next_page)
             yield scrapy.Request(url="https://books.toscrape.com/catalogue/" + next_page, callback=self.parse)
 
         else:
