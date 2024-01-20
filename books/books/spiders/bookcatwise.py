@@ -1,3 +1,4 @@
+from typing import Any, Optional
 import scrapy
 import pandas as pd
 
@@ -5,10 +6,11 @@ import pandas as pd
 class BookSpider(scrapy.Spider):
     name = "bookcat"
 
-    books = pd.DataFrame({'title': [], 'category':[], 'price': []})
-    books.to_csv('bookscatwise.csv', index=False)
+    def __init__(self):
+        print("Scraping Started........................")
 
-    print("Scraping Started")
+        books = pd.DataFrame({'title': [], 'category':[], 'price': []})
+        books.to_csv('bookscatwise.csv', index=False)
 
     def start_requests(self):
         url = "https://books.toscrape.com/index.html"
@@ -17,7 +19,7 @@ class BookSpider(scrapy.Spider):
     
     def head(self, response):
         urls = response.css('ul.nav-list > li > ul > li > a::attr(href)').extract()
-        print(urls)
+        # print(urls)
 
         for url in urls:
             yield scrapy.Request(f"https://books.toscrape.com/{url}", callback=self.parse) 
@@ -29,17 +31,16 @@ class BookSpider(scrapy.Spider):
             price = book.css('.price_color::text').get()
             cat = response.css("h1::text").get()
 
-            self.books = self.books._append({'title': title,'category':cat, 'price': price}, ignore_index=True)
-            self.books.to_csv("bookscatwise.csv", index=False)
+            books = books._append({'title': title,'category':cat, 'price': price}, ignore_index=True)
 
+            books.to_csv("bookscatwise.csv", index=False)
         next_page = response.css('li.next a::attr(href)').get()
 
         if next_page:
-            print("Searching\n " + next_page)
+            # print("Searching\n " + next_page)
             url_ = response.url
             url_ = url_.split("/")
             url_ = "/".join(url_[:-1])
-            print(url_ + "/")
             url_ = url_ + "/"
             yield scrapy.Request(url=url_ + next_page, callback=self.parse)
 

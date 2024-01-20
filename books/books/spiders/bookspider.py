@@ -1,4 +1,3 @@
-from typing import Any, Optional
 import scrapy
 import pandas as pd
 
@@ -6,11 +5,10 @@ import pandas as pd
 class BookSpider(scrapy.Spider):
     name = "books"
 
-    def __init__(self):
-        print("Scraping Started........................")
+    print("Scraping Started")
 
-        books = pd.DataFrame({'title': [], 'price': []})
-        books.to_csv('books.csv', index=False)
+    books = pd.DataFrame({'title': [], 'price': []})
+    books.to_csv('books.csv', index=False)
 
     def start_requests(self):
 
@@ -19,6 +17,7 @@ class BookSpider(scrapy.Spider):
         for url in urls:
             yield scrapy.Request(url=url, callback=self.parse)
             
+
     def parse(self, response):        
 
         books = pd.read_csv("books.csv")
